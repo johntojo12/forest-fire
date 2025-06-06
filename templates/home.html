@@ -105,7 +105,7 @@
             <button type="submit">Predict FWI</button>
         </form>
 
-        {% if results is not none and not error_message %}
+        {% if results is defined and results is not none and not error_message %}
             <h2>The FWI prediction is: {{ "%.2f"|format(results) }}</h2>
         {% endif %}
 
