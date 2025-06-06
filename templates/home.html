@@ -1,25 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FWI Prediction</title>
+    <style>
+        body {
+            background-color: #3A3A3A; /* Dark Charcoal/Grey */
+            color: #E0E0E0; /* Light Grey for text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #2F2F2F; /* Slightly lighter dark shade for content box */
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px; /* Max width for the form container */
+            text-align: center;
+        }
+        h1 {
+            color: #FF8C00; /* Dark Orange */
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #FFA500; /* Orange for results */
+            margin-top: 20px;
+        }
+        .error-message {
+            background-color: #FFE0B2; /* Light Orange/Peach background */
+            color: #C00000; /* Dark Red text */
+            border: 1px solid #C00000;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: left;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Spacing between form elements */
+        }
+        input[type="text"] {
+            background-color: #505050;
+            color: #E0E0E0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #606060;
+            font-size: 1em;
+        }
+        input[type="text"]::placeholder {
+            color: #A0A0A0;
+        }
+        button[type="submit"] {
+            background-color: #FF8C00; /* Dark Orange */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #FF4500; /* OrangeRed on hover */
+        }
+        a {
+            color: #FF4500; /* OrangeRed - for links */
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            margin-top: 20px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>FWI Prediction</h1>
+    <div class="container">
+        <h1>FWI Prediction</h1>
 
-    <form action="{{ url_for('predict_datapoint')}}" method="post">
-        <input type="text" name="Temperature" placeholder="Temperature" required="required" /><br>
-        <input type="text" name="RH" placeholder="RH" required="required" /><br>
-        <input type="text" name="Ws" placeholder="Ws" required="required" /><br>
-        <input type="text" name="Rain" placeholder="Rain" required="required" /><br>
-        <input type="text" name="FFMC" placeholder="FFMC" required="required" /><br>
-        <input type="text" name="DMC" placeholder="DMC" required="required" /><br>
-        <input type="text" name="ISI" placeholder="ISI" required="required" /><br>
-        <input type="text" name="Classes" placeholder="Classes" required="required" /><br>
-        <input type="text" name="Region" placeholder="Region" required="required" /><br>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
-    </form>
+        {% if error_message %}
+            <div class="error-message">
+                <strong>Error:</strong> {{ error_message }}
+            </div>
+        {% endif %}
 
-    <h2>The FWI prediction is {{ results }}</h2> 
+        <form action="{{ url_for('predict_datapoint')}}" method="post">
+            <input type="text" name="Temperature" placeholder="Temperature (°C)" required="required" /><br>
+            <input type="text" name="RH" placeholder="Relative Humidity (%)" required="required" /><br>
+            <input type="text" name="Ws" placeholder="Wind Speed (km/h)" required="required" /><br>
+            <input type="text" name="Rain" placeholder="Rain (mm)" required="required" /><br>
+            <input type="text" name="FFMC" placeholder="FFMC (Fine Fuel Moisture Code)" required="required" /><br>
+            <input type="text" name="DMC" placeholder="DMC (Duff Moisture Code)" required="required" /><br>
+            <input type="text" name="ISI" placeholder="ISI (Initial Spread Index)" required="required" /><br>
+            <input type="text" name="Classes" placeholder="Classes (0 for not fire, 1 for fire)" required="required" /><br>
+            <input type="text" name="Region" placeholder="Region (0 for Bejaia, 1 for Sidi-Bel Abbes)" required="required" /><br>
+            <button type="submit">Predict FWI</button>
+        </form>
 
+        {% if results is defined and results is not none and not error_message %}
+            <h2>The FWI prediction is: {{ "%.2f"|format(results) }}</h2>
+        {% endif %}
+
+        <p><a href="{{ url_for('hello_world') }}">Back to Home</a></p>
+    </div>
 </body>
 </html>
